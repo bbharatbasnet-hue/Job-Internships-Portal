@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+
 # CareerBridge — Job & Internship Platform
 
 A production-oriented Django recruitment marketplace for job seekers, employers and administrators.
@@ -36,4 +38,8 @@ Demo accounts: `demo-employer` / `demo12345` and `demo-seeker` / `demo12345`. Th
 
 ## Production checklist
 
-Set a unique `SECRET_KEY`, `DEBUG=False`, real `ALLOWED_HOSTS`, HTTPS/CSRF origins, real SMTP credentials via environment variables, PostgreSQL (recommended), object/private media storage, backups, and a real domain. Resume downloads are permission-checked through Django rather than exposing private resume files as public URLs.
+# Set a unique `SECRET_KEY`, `DEBUG=False`, real `ALLOWED_HOSTS`, HTTPS/CSRF origins, real SMTP credentials via environment variables, PostgreSQL (recommended), object/private media storage, backups, and a real domain. Resume downloads are permission-checked through Django rather than exposing private resume files as public URLs.
+
+# Job-Internships-Portal
+
+> > > > > > > bf388294e0528affaf6cf553180d4ebfe59a8e0b
