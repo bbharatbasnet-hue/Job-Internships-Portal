@@ -1,0 +1,279 @@
+{% extends "base.html" %}{% block title %}Find your next career opportunity |  
+CareerBridge{% endblock %}{% block content %}  
+<section class="hero">  
+  <div class="container hero-grid">  
+    <div>  
+      <span class="eyebrow"  
+        ><i class="fa-solid fa-sparkles"></i> Jobs & internships in one  
+        place</span  
+      >  
+      <h1>Find work that moves your <span>career forward.</span></h1>  
+      <p class="hero-copy">  
+        Discover relevant opportunities, build a professional profile, and  
+        connect with growing teams.  
+      </p>  
+      <form class="hero-search" action="{% url 'job_list' %}" method="get">  
+        <label  
+          ><i class="fa-solid fa-magnifying-glass"></i  
+          ><input name="q" placeholder="Job title, skill or keyword" /></label  
+        ><label  
+          ><i class="fa-solid fa-location-dot"></i  
+          ><input name="location" placeholder="Location" /></label  
+        ><select name="type">  
+          <option value="">All opportunity types</option>  
+          <option value="job">Full-time</option>  
+          <option value="internship">Internship</option>  
+          <option value="part_time">Part-time</option>  
+          <option value="contract">Contract</option></select  
+        ><button class="btn btn-primary">Search opportunities</button>  
+      </form>  
+      <div class="hero-trust">  
+        <span  
+          ><i class="fa-solid fa-shield-halved"></i> Professional profiles</span  
+        ><span><i class="fa-solid fa-building"></i> Employer listings</span  
+        ><span><i class="fa-solid fa-lock"></i> Secure applications</span>  
+      </div>  
+    </div>  
+    <div class="hero-panel">  
+      <div class="hero-card">  
+        <div class="hero-card-top">  
+          <span class="status-dot"></span><span>Live opportunities</span  
+          ><strong>{{ stats.jobs }}+</strong>  
+        </div>  
+        {% for j in latest_jobs|slice:':3' %}<a  
+          class="mini-job"  
+          href="{{ j.get_absolute_url }}"  
+          ><span class="mini-logo">{{ j.company|slice:':1' }}</span  
+          ><span  
+            ><b>{{ j.title }}</b  
+            ><small>{{ j.company }} · {{ j.location }}</small></span  
+          ><i class="fa-solid fa-arrow-up-right-from-square"></i></a  
+        >{% endfor %}<a href="{% url 'job_list' %}" class="text-link"  
+          >Explore all opportunities <i class="fa-solid fa-arrow-right"></i  
+        ></a>  
+      </div>  
+    </div>  
+  </div>  
+</section>  
+ 
+<section class="section">  
+  <div class="container">  
+    <div class="section-heading">  
+      <div>  
+        <span class="eyebrow">Browse by interest</span>  
+        <h2>Popular categories</h2>  
+      </div>  
+      <a class="text-link" href="{% url 'job_list' %}"  
+        >View all <i class="fa-solid fa-arrow-right"></i  
+      ></a>  
+    </div>  
+    <div class="category-grid">  
+      {% for c in categories %}<a  
+        class="category-card"  
+        href="{% url 'job_list' %}?category={{ c.id }}"  
+        ><span class="category-icon"><i class="fa-solid {{ c.icon }}"></i></span  
+        ><span  
+          ><b>{{ c.name }}</b  
+          ><small>{{ c.active_jobs }} open opportunities</small></span  
+        ><i class="fa-solid fa-arrow-right"></i></a  
+      >{% endfor %}  
+    </div>  
+  </div>  
+</section>  
+ 
+<section class="section muted-section">  
+  <div class="container">  
+    <div class="section-heading">  
+      <div>  
+        <span class="eyebrow">Curated opportunities</span>  
+        <h2>Featured jobs & internships</h2>  
+      </div>  
+      <a class="text-link" href="{% url 'job_list' %}"  
+        >Browse all <i class="fa-solid fa-arrow-right"></i  
+      ></a>  
+    </div>  
+    <div class="job-grid">  
+      {% for j in featured_jobs %}  
+      <article class="job-card">  
+        <div class="job-card-top">  
+          <span class="company-logo">{{ j.company|slice:':1' }}</span  
+          ><span class="badge badge-{{ j.job_type }}"  
+            >{{ j.get_job_type_display }}</span  
+          >  
+        </div>  
+        <h3><a href="{{ j.get_absolute_url }}">{{ j.title }}</a></h3>  
+        <p class="company-name">  
+          {{ j.company }} {% if j.company_profile.verified %}<i  
+            class="fa-solid fa-circle-check verified"  
+            title="Verified company"  
+          ></i  
+          >{% endif %}  
+        </p>  
+        <div class="job-meta">  
+          <span><i class="fa-solid fa-location-dot"></i>{{ j.location }}</span  
+          ><span 
+            ><i class="fa-solid fa-clock"></i>{{ j.get_workplace_type_display }}</span 
+          >  
+        </div>  
+        <div class="job-card-bottom">  
+          <span>{{ j.salary|default:"Salary not disclosed" }}</span  
+          ><span>{{ j.created|timesince }} ago</span>  
+        </div>  
+      </article>  
+      {% empty %}  
+      <div class="empty-state">  
+        <i class="fa-regular fa-folder-open"></i>  
+        <h3>No featured opportunities yet</h3>  
+        <p>Run the demo seed command or publish your first opportunity.</p>  
+      </div>  
+      {% endfor %}  
+    </div>  
+  </div>  
+</section>  
+ 
+<section class="section">  
+  <div class="container">  
+    <div class="section-heading">  
+      <div>  
+        <span class="eyebrow">Trusted profiles</span>  
+        <h2>Featured companies</h2>  
+      </div>  
+      <a class="text-link" href="{% url 'company_list' %}"  
+        >Explore companies <i class="fa-solid fa-arrow-right"></i  
+      ></a>  
+    </div>  
+    <div class="company-grid">  
+      {% for c in companies %}<a  
+        class="company-card"  
+        href="{{ c.get_absolute_url }}"  
+        ><div class="company-logo large">  
+          {% if c.logo %}<img src="{{ c.logo.url }}" alt="{{ c.name }}" />{% else %}{{ c.name|slice:':1' }}{% endif %} 
+        </div>  
+        <h3>  
+          {{ c.name }} {% if c.verified %}<i  
+            class="fa-solid fa-circle-check verified"  
+          ></i  
+          >{% endif %}  
+        </h3>  
+        <p> 
+          {{ c.industry|default:"Growing company" }} · {{ c.location|default:"Nepal" }} 
+        </p> 
+        <span>{{ c.jobs.count }} open roles</span></a  
+      >{% empty %}  
+      <div class="empty-state">  
+        <h3>Companies will appear here</h3>  
+        <p>  
+          Featured employer profiles are shown once employers create their  
+          company pages.  
+        </p>  
+      </div>  
+      {% endfor %}  
+    </div>  
+  </div>  
+</section>  
+ 
+<section class="stats-strip">  
+  <div class="container stats-row">  
+    <div>  
+      <strong>{{ stats.jobs }}</strong><span>Active opportunities</span>  
+    </div>  
+    <div>  
+      <strong>{{ stats.companies }}</strong><span>Employer profiles</span>  
+    </div>  
+    <div>  
+      <strong>{{ stats.applications }}</strong 
+      ><span>Applications received</span>  
+    </div>  
+    <div>  
+      <strong>{{ stats.categories }}</strong><span>Career categories</span>  
+    </div>  
+  </div>  
+</section>  
+ 
+<section class="section" id="how-it-works">  
+  <div class="container">  
+    <div class="center-heading">  
+      <span class="eyebrow">Simple by design</span>  
+      <h2>How BharatCareerHub works</h2>  
+      <p>Everything you need to move from discovery to application.</p>  
+    </div>  
+    <div class="steps">  
+      <div class="step">  
+        <span>01</span><i class="fa-solid fa-magnifying-glass"></i>  
+        <h3>Discover</h3>  
+        <p>  
+          Search opportunities using keywords, location, type and experience  
+          filters.  
+        </p>  
+      </div>  
+      <div class="step">  
+        <span>02</span><i class="fa-solid fa-user-check"></i>  
+        <h3>Build your profile</h3>  
+        <p>  
+          Present your skills, education, experience and resume professionally.  
+        </p>  
+      </div>  
+      <div class="step">  
+        <span>03</span><i class="fa-solid fa-paper-plane"></i>  
+        <h3>Apply</h3>  
+        <p>  
+          Send focused applications and track every status from your dashboard.  
+        </p>  
+      </div>  
+      <div class="step">  
+        <span>04</span><i class="fa-solid fa-handshake"></i>  
+        <h3>Connect</h3>  
+        <p>  
+          Employers review candidates and move promising applications forward.  
+        </p>  
+      </div>  
+    </div>  
+  </div>  
+</section>  
+ 
+<section class="section cta-section">  
+  <div class="container cta-card">  
+    <div>  
+      <span class="eyebrow">For employers</span>  
+      <h2>Meet your next great hire.</h2>  
+      <p>  
+        Publish professional vacancies and manage applicants from one workspace.  
+      </p>  
+    </div>  
+    <a class="btn btn-primary" href="{% url 'register' %}?role=employer"  
+      >Start hiring <i class="fa-solid fa-arrow-right"></i  
+    ></a>  
+  </div>  
+</section>  
+ 
+<section class="section" id="faq">  
+  <div class="container faq">  
+    <div class="center-heading">  
+      <span class="eyebrow">Need help?</span>  
+      <h2>Frequently asked questions</h2>  
+    </div>  
+    <details>  
+      <summary>Can I apply for more than one opportunity?</summary>  
+      <p>  
+        Yes. Your dashboard keeps your applications and their current statuses  
+        organized.  
+      </p>  
+    </details>  
+    <details>  
+      <summary>Can employers manage applicants?</summary>  
+      <p>  
+        Yes. Employers can review candidate applications and update statuses  
+        such as reviewing, shortlisted, interview, selected or rejected.  
+      </p>  
+    </details>  
+    <details>  
+      <summary>Is the recommendation system AI-powered?</summary>  
+      <p>  
+        No. Recommendations are based on transparent profile and job attributes  
+        such as skills, category, location and experience level.  
+      </p>  
+    </details>  
+  </div>  
+</section>  
+ 
+{% endblock %} 

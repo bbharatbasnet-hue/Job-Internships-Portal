@@ -1,0 +1,228 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Basic HTML and responsive settings -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <!-- Website SEO description -->
+    <meta
+      name="description"
+      content="Find jobs and internships, build your professional profile, and connect with employers."
+    />
+
+    <!-- Open Graph metadata for social media sharing -->
+    <meta property="og:title" content="Job & Internship Portal" />
+    <meta
+      property="og:description"
+      content="A modern recruitment marketplace for jobs and internships."
+    />
+    <meta property="og:type" content="website" />
+
+    <!-- Website favicon/logo -->
+    <link rel="icon" href="{% static 'images/f.png' %}" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+
+    <!-- Main CSS file -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+    <!-- Dynamic page title -->
+    <title>{% block title %}Job & Internship Portal{% endblock %}</title>
+
+    <!-- Extra CSS/head content from child templates -->
+    {% block head %}{% endblock %}
+  </head>
+
+  <body>
+    <!-- =========================
+         HEADER / NAVIGATION
+    ========================== -->
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <!-- Website logo and brand -->
+        <a href="{% url 'home' %}" class="brand">
+          <img src="{% static 'images/f.png' %}" alt="Portal logo" />
+          <span>Bharat<span>CareerHub</span></span>
+        </a>
+
+        <!-- Mobile navigation menu button -->
+        <button
+          class="nav-toggle"
+          aria-label="Open menu"
+          aria-expanded="false"
+          data-nav-toggle
+        >
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <!-- Main navigation -->
+        <nav class="main-nav" data-nav>
+          <!-- Public navigation links -->
+          <a href="{% url 'job_list' %}">Find jobs</a>
+          <a href="{% url 'company_list' %}">Companies</a>
+
+          <!-- Navigation for logged-in users -->
+          {% if user.is_authenticated %}
+
+          <!-- Dashboard link -->
+          <a href="{% url 'dashboard' %}">Dashboard</a>
+
+          <!-- Employer-only job posting link -->
+          {% if user.is_employer %}
+          <a href="{% url 'job_create' %}">Post a job</a>
+          {% endif %}
+
+          <!-- Notifications -->
+          <a
+            href="{% url 'notifications' %}"
+            class="nav-icon"
+            aria-label="Notifications"
+          >
+            <i class="fa-regular fa-bell"></i>
+
+            <!-- Show unread notification count -->
+            {% if unread_notifications %}
+            <b>{{ unread_notifications }}</b>
+            {% endif %}
+          </a>
+
+          <!-- User profile -->
+          <a href="{% url 'profile' %}" class="user-chip">
+            <span> {{ user.display_name|slice:':1'|upper }} </span>
+
+            {{ user.display_name|truncatechars:18 }}
+          </a>
+
+          <!-- Logout form -->
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="nav-logout">Log out</button>
+          </form>
+
+          {% else %}
+
+          <!-- Navigation for visitors -->
+          <a href="{% url 'login' %}">Log in</a>
+
+          <a href="{% url 'register' %}" class="btn btn-sm btn-light">
+        Register
+          </a>
+
+          {% endif %}
+        </nav>
+      </div>
+    </header>
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+    <main>
+      <!-- Django success/error/info messages -->
+      {% if messages %}
+      <div class="toast-stack" aria-live="polite">
+        {% for m in messages %}
+        <div class="toast {{ m.tags }}">
+          <!-- Message icon based on message type -->
+          <i
+            class="fa-solid {% if 'success' in m.tags %} fa-circle-check {% elif 'error' in m.tags %} fa-circle-exclamation {% else %} fa-circle-info {% endif %}"
+          ></i>
+
+          <!-- Message text -->
+          <span>{{ m }}</span>
+
+          <!-- Close message button -->
+          <button data-toast-close aria-label="Close">×</button>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Page-specific content -->
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+    <footer class="footer">
+      <div class="container footer-grid">
+        <!-- Footer brand and description -->
+        <div>
+          <a class="brand footer-brand" href="{% url 'home' %}">
+            <img src="{% static 'images/f.png' %}" alt="" />
+
+            <span>Bharat<span>CareerHub</span></span>
+          </a>
+
+          <p>
+            Connecting ambitious people with meaningful work and internships.
+          </p>
+        </div>
+
+        <!-- Explore links -->
+        <div>
+          <h4>Explore</h4>
+
+          <a href="{% url 'job_list' %}">Find jobs</a>
+          <a href="{% url 'company_list' %}">Companies</a>
+
+          <a href="{% url 'home' %}#how-it-works"> How it works </a>
+        </div>
+
+        <!-- Employer links -->
+        <div>
+          <h4>For employers</h4>
+
+          <a href="{% url 'job_create' %}">Post a job</a>
+
+          <!-- Company profile only for logged-in employers -->
+          {% if user.is_authenticated and user.is_employer %}
+          <a href="{% url 'company_profile' %}"> Company profile </a>
+          {% endif %}
+        </div>
+
+        <!-- Company links -->
+        <div>
+          <h4>Company</h4>
+
+          <a href="{% url 'home' %}#faq">FAQ</a>
+          <a href="{% url 'home' %}#contact">Contact</a>
+          <a href="#">Privacy & terms</a>
+        </div>
+      </div>
+
+      <!-- Footer bottom / copyright -->
+   <div class="container footer-bottom">
+  <span>
+    © 2026 BharatCareerHub. All rights reserved.
+  </span>
+
+  <span>
+    Built for professional recruitment.
+  </span>
+
+  <span>
+    Designed & Developed by <strong>Bharat Basnet</strong>
+  </span>
+</div>
+
+    <!-- Main JavaScript file -->
+    <script src="{% static 'js/app.js' %}"></script>
+  </body>
+</html>
