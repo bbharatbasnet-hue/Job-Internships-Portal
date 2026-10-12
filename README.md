@@ -1,6 +1,6 @@
 <<<<<<< HEAD
 
-# CareerBridge — Job & Internship Platform
+# BharatCareerHub — Job & Internship Platform
 
 A production-oriented Django recruitment marketplace for job seekers, employers and administrators.
 
@@ -8,9 +8,9 @@ A production-oriented Django recruitment marketplace for job seekers, employers 
 
 ```bash
 python -m venv venv
-# Windows
+# For Windows Users
 venv\Scripts\activate
-# macOS/Linux
+# For macOS/Linux users
 # source venv/bin/activate
 pip install -r requirements.txt
 copy .env.example .env  # Windows
